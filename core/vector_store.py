@@ -1,15 +1,23 @@
+"""
+Persistent ChromaDB Vector Store for Qatar Consumer Protection Law No. 8 (2008),
+Ministerial Decision No. 68 of 2012, CRA Telecom Quality-of-Service Regulations,
+and the internal Qatar Mobile SLA Warranty Policy PDF.
+"""
+
 import os
 import logging
 from pathlib import Path
 from typing import List, Dict, Any
 import chromadb
+from pypdf import PdfReader
+
+from config.settings import settings
+from core.generate_pdf import generate_policy_pdf
 
 logger = logging.getLogger(__name__)
 
-# Resolve an absolute path inside the project root so uvicorn working-directory shifts never create empty DBs
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-CHROMA_DB_DIR = str(PROJECT_ROOT / "chroma_db")
-COLLECTION_NAME = "qatar_telecom_consumer_law"
+DEFAULT_SLA_PDF_PATH = PROJECT_ROOT / "data" / "qatar_sla_policy.pdf"
 
 # ============================================================================
 # QATAR LEGAL & TELECOM SLA CORPUS (LAW NO. 8 OF 2008 & CRA REGULATIONS)
@@ -104,32 +112,70 @@ QATAR_LEGAL_CORPUS: List[Dict[str, Any]] = [
 ]
 
 
+def _load_sla_pdf_chunks(pdf_path: Path = DEFAULT_SLA_PDF_PATH) -> List[Dict[str, Any]]:
+    """
+    Auto-generates data/qatar_sla_policy.pdf if missing and extracts its pages
+    for ChromaDB indexing so internal SLA turnaround matrices are searchable.
+    """
+    try:
+        if not pdf_path.exists():
+            generate_policy_pdf(str(pdf_path))
+
+        reader = PdfReader(str(pdf_path))
+        chunks: List[Dict[str, Any]] = []
+        for page_idx, page in enumerate(reader.pages):
+            page_text = (page.extract_text() or "").strip()
+            if page_text:
+                chunks.append(
+                    {
+                        "id": f"qatar_mobile_sla_pdf_page_{page_idx + 1}",
+                        "metadata": {
+                            "law": "Qatar Mobile Internal SLA & Law No. 8 of 2008",
+                            "article": f"SLA Policy PDF (Page {page_idx + 1})",
+                            "topic": "sla_turnaround_and_warranty_matrix",
+                        },
+                        "text": page_text,
+                    }
+                )
+        return chunks
+    except Exception as exc:
+        logger.warning("Could not ingest SLA PDF at %s: %s", pdf_path, exc)
+        return []
+
+
 class QatarLegalVectorStore:
     """
-    Persistent ChromaDB wrapper for Qatar Consumer Protection Law No. 8 (2008)
-    and CRA Telecom Quality-of-Service regulations.
+    Persistent ChromaDB wrapper for Qatar Consumer Protection Law No. 8 (2008),
+    CRA Telecom Quality-of-Service regulations, and Qatar Mobile SLA policy PDFs.
     """
 
-    def __init__(self, persist_dir: str = CHROMA_DB_DIR, collection_name: str = COLLECTION_NAME):
+    def __init__(
+        self,
+        persist_dir: str = settings.PERSIST_DIRECTORY,
+        collection_name: str = settings.COLLECTION_NAME,
+    ):
         os.makedirs(persist_dir, exist_ok=True)
         self.client = chromadb.PersistentClient(path=persist_dir)
         self.collection = self.client.get_or_create_collection(name=collection_name)
         self._ensure_seeded()
 
     def _ensure_seeded(self) -> None:
-        """Idempotently upserts the Qatar legal corpus into ChromaDB if empty or outdated."""
+        """Idempotently upserts both the Qatar legal corpus and generated SLA PDF into ChromaDB."""
         try:
+            pdf_chunks = _load_sla_pdf_chunks()
+            combined_corpus = QATAR_LEGAL_CORPUS + pdf_chunks
+
             current_count = self.collection.count()
-            if current_count < len(QATAR_LEGAL_CORPUS):
+            if current_count < len(combined_corpus):
                 self.collection.upsert(
-                    ids=[item["id"] for item in QATAR_LEGAL_CORPUS],
-                    documents=[item["text"] for item in QATAR_LEGAL_CORPUS],
-                    metadatas=[item["metadata"] for item in QATAR_LEGAL_CORPUS],
+                    ids=[item["id"] for item in combined_corpus],
+                    documents=[item["text"] for item in combined_corpus],
+                    metadatas=[item["metadata"] for item in combined_corpus],
                 )
                 logger.info(
-                    "Seeded %d Qatar legal clauses into ChromaDB at %s",
-                    len(QATAR_LEGAL_CORPUS),
-                    CHROMA_DB_DIR,
+                    "Seeded %d Qatar legal & SLA PDF clauses into ChromaDB at %s",
+                    len(combined_corpus),
+                    settings.PERSIST_DIRECTORY,
                 )
         except Exception as exc:
             logger.exception("Failed seeding ChromaDB collection: %s", exc)
@@ -151,20 +197,18 @@ class QatarLegalVectorStore:
             return []
 
 
-# Singleton instance + helper function expected by graph/workflow.py
 _vector_store = QatarLegalVectorStore()
 
 
 def query_legal_docs(query_text: str, top_k: int = 2) -> List[str]:
-    """Retrieves top_k relevant Qatar Law No. 8 (2008) / CRA policy chunks."""
+    """Retrieves top_k relevant Qatar Law No. 8 (2008), CRA, and SLA PDF policy chunks."""
     return _vector_store.query(query_text=query_text, top_k=top_k)
 
 
 if __name__ == "__main__":
-    # Quick standalone CLI test
-    sample_q = "My phone fell in water and the charging port has white corrosion. Free warranty?"
+    sample_q = "My phone fell in water and the charging port has white corrosion. What is the SLA turnaround?"
     matches = query_legal_docs(sample_q, top_k=2)
-    print(f"ChromaDB Path: {CHROMA_DB_DIR}")
-    print(f"Total Indexed Clauses: {_vector_store.collection.count()}\n")
+    print(f"ChromaDB Path: {settings.PERSIST_DIRECTORY}")
+    print(f"Total Indexed Clauses (Legal + PDF): {_vector_store.collection.count()}\n")
     for idx, doc in enumerate(matches, 1):
         print(f"[{idx}] {doc}\n")
