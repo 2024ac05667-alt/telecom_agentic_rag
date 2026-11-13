@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.arabic-font {
+  font-family: 'Cairo', sans-serif;
+}
+
+.font-mono-code {
+  font-family: 'Fira Code', monospace;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(138, 21, 56, 0.12);
+}
+
+.dark .glass-panel {
+  background: rgba(18, 18, 26, 0.88);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+/* Mobile Device Frame Simulation */
+.mobile-device-shell {
+  width: 380px;
+  height: 780px;
+  border-radius: 46px;
+  box-shadow: 0 0 0 12px #181824, 0 25px 60px -12px rgba(0, 0, 0, 0.6);
+}
+
+.device-notch {
+  width: 135px;
+  height: 26px;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(138, 21, 56, 0.3);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.4);
+}

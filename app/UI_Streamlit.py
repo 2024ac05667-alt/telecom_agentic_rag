@@ -1,167 +1,175 @@
+"""
+Streamlit Control Panel & RTL Mobile Diagnostic Interface.
+"""
+
 import streamlit as st
 import requests
 import base64
+from PIL import Image
+import io
 
-# --- Page Configuration ---
 st.set_page_config(
-    page_title="Qatar Mobile Enterprise AI Agent",
+    page_title="Qatar Telecom Diagnostic System",
     page_icon="📱",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    layout="wide"
 )
 
-# --- Custom Styling for Enterprise Look & Feel ---
+# Custom RTL & Mobile Styling CSS
 st.markdown("""
 <style>
-    .chat-card-user {
-        background-color: #F0F2F6;
-        padding: 12px 18px;
-        border-radius: 15px 15px 2px 15px;
-        margin-bottom: 10px;
-        color: #1E1E1E;
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+    
+    /* Global Arabic Font */
+    .arabic-text {
+        font-family: 'Cairo', sans-serif !important;
+        direction: rtl !important;
+        text-align: right !important;
     }
-    .chat-card-agent {
-        background-color: #0E1117;
-        color: #FFFFFF;
-        padding: 16px 20px;
-        border-radius: 15px 15px 15px 2px;
+    
+    /* Mobile Device Frame Container */
+    .mobile-frame {
+        max-width: 410px;
+        margin: 0 auto;
+        border: 12px solid #1f2937;
+        border-radius: 40px;
+        padding: 20px;
+        background-color: #090d16;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    
+    .mobile-header {
+        text-align: center;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #374151;
         margin-bottom: 15px;
-        border: 1px solid #262730;
     }
-    .status-badge {
+    
+    .arabic-card {
+        background-color: #111827;
+        border-right: 4px solid #8b0000;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+    
+    .badge-pii {
+        background-color: #ef4444;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
         font-size: 0.8rem;
-        padding: 4px 10px;
-        border-radius: 12px;
-        background-color: #1E3A8A;
-        color: #93C5FD;
-        display: inline-block;
-        margin-right: 5px;
-    }
-    .agent-trace {
-        font-family: monospace;
-        background: #111827;
-        padding: 10px;
-        border-radius: 6px;
-        color: #10B981;
-        font-size: 0.85rem;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# --- Session State Initialization ---
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+API_ENDPOINT = "http://127.0.0.1:8000/api/diagnose"
 
-# --- Sidebar Configuration ---
+# Header & Toolbar
+st.title("🇶🇦 Qatar Telecom Multi-Agent Diagnostic Platform")
+
+view_mode = st.radio(
+    "Select Display Mode:",
+    ["💻 Enterprise Desktop Dashboard", "📱 RTL Mobile Customer View (Smartphone Frame)"],
+    horizontal=True
+)
+
+st.divider()
+
+# Left Column: Controls & Input
 with st.sidebar:
-    st.image("https://img.icons8.com/isometric-folders/100/smartphone-ram.png", width=64)
-    st.title("Enterprise Control Center")
-    st.caption("Qatar Telecom Diagnostics RAG v2.0")
-    
-    st.divider()
-    
-    mode = st.radio(
-        "Select User Viewpoint:",
-        ["📱 Customer View (Bilingual)", "🛠️ Technician & Supervisor Dashboard"]
+    st.header("🎮 Scenario Presets")
+    preset = st.selectbox(
+        "Load Quick Test Case:",
+        ["Custom Input", "Shattered OLED Screen", "Qatar Repair SLA Enquiry", "PII Scrubbing Test", "Out of Scope Recipe"]
     )
     
-    st.divider()
-    if st.button("🗑️ Clear Session History", use_container_width=True):
-        st.session_state.messages = []
-        st.rerun()
+    default_text = ""
+    if preset == "Shattered OLED Screen":
+        default_text = "My phone screen is cracked and showing green display lines. What is the repair timeline under Qatar law?"
+    elif preset == "Qatar Repair SLA Enquiry":
+        default_text = "کم تستغرق عملية إصلاح جهاز محمول في قطر وفقاً للائحة حماية المستهلك؟"
+    elif preset == "PII Scrubbing Test":
+        default_text = "Check status for QID 29812345678 and mobile 55123456 regarding device repair."
+    elif preset == "Out of Scope Recipe":
+        default_text = "Can you give me an authentic recipe for Qatari Machboos?"
 
-# --- Main Layout ---
-st.title("📱 Qatar Telecom Diagnostic & SLA Assistant")
-st.caption("Powered by Gemini 2.5 Flash Multi-Agent Architecture & ChromaDB Policy RAG")
-
-# --- Render Chat History ---
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        if "image_bytes" in msg and msg["image_bytes"]:
-            st.image(msg["image_bytes"], caption="Attached Device Photo", width=250)
-        
-        st.markdown(msg["content"])
-        
-        # If there's trace metadata available, show it in tech mode
-        if "trace" in msg and "Technician" in mode:
-            with st.expander("🔍 LangGraph Supervisor Trace Execution", expanded=False):
-                for step in msg["trace"]:
-                    st.markdown(f"`{step}`")
-
-# --- Chat Input Controls ---
-with st.container():
-    col1, col2 = st.columns([0.8, 0.2])
-    with col2:
-        uploaded_file = st.file_uploader("Attach Photo", type=["jpg", "jpeg", "png"], label_visibility="collapsed")
+    user_query = st.text_area("User Diagnostic Request:", value=default_text, height=120)
+    uploaded_file = st.file_uploader("Upload Device Damage Image (Optional):", type=["jpg", "jpeg", "png"])
     
-prompt = st.chat_input("Ask about device diagnostics, repair turnaround times, or Qatar SLA laws...")
+    submit_btn = st.button("🚀 Run Multi-Agent Diagnostic Pipeline", use_container_width=True)
 
-# --- Process Input ---
-if prompt:
-    # Read image if attached
-    img_bytes = uploaded_file.getvalue() if uploaded_file else None
+# Processing Logic
+if submit_btn and user_query:
+    with st.spinner("Executing LangGraph Agents & Vision Engine..."):
+        try:
+            files = {}
+            if uploaded_file:
+                files = {"image": (uploaded_file.name, uploaded_file.getvalue(), uploaded_file.type)}
+            
+            data = {"query": user_query}
+            
+            response = requests.post(API_ENDPOINT, data=data, files=files)
+            
+            if response.status_code == 200:
+                res = response.json()
+                st.session_state["last_result"] = res
+            else:
+                st.error(f"Backend API Error: {response.status_code}")
+        except Exception as e:
+            st.error(f"Failed to connect to FastAPI Backend ({API_ENDPOINT}). Error: {str(e)}")
 
-    # Append User Message to UI
-    user_msg = {"role": "user", "content": prompt}
-    if img_bytes:
-        user_msg["image_bytes"] = img_bytes
-    st.session_state.messages.append(user_msg)
+# Display Result Viewports
+if "last_result" in st.session_state:
+    res = st.session_state["last_result"]
+    
+    if view_mode == "💻 Enterprise Desktop Dashboard":
+        col1, col2 = st.columns([3, 2])
+        
+        with col1:
+            st.subheader("📋 Bilingual Diagnostic Report")
+            
+            if res.get("pii_scrubbed"):
+                st.markdown('<span class="badge-pii">⚠️ PII Sanitized by Security Sentinel</span>', unsafe_allow_html=True)
+                st.write("")
 
-    # Render User Message immediately
-    with st.chat_message("user"):
-        if img_bytes:
-            st.image(img_bytes, caption="Attached Device Photo", width=250)
-        st.markdown(prompt)
+            st.markdown("### 🇬🇧 English Summary")
+            st.info(res.get("response_en", ""))
+            
+            st.markdown("### 🇶🇦 Arabic Summary (RTL)")
+            st.markdown(f'<div class="arabic-card arabic-text">{res.get("response_ar", "")}</div>', unsafe_allow_html=True)
+            
+            st.divider()
+            st.markdown(f"**RAG Context:** `{res.get('policy_context')}`")
+            st.markdown(f"**Hardware Assessment:** `{res.get('hardware_assessment')}`")
+            
+        with col2:
+            st.subheader("🔍 LangGraph Trace Logs")
+            st.metric("Execution Latency", f"{res.get('latency_seconds')} seconds")
+            
+            for log in res.get("agent_history", []):
+                st.code(log, language="text")
 
-    # Call FastAPI Service
-    with st.chat_message("assistant"):
-        with st.spinner("🧠 LangGraph agents inspecting hardware and retrieving Qatar SLA policies..."):
-            try:
-                files = {"image": ("device.jpg", img_bytes, "image/jpeg")} if img_bytes else None
-                payload = {
-                    "query": prompt,
-                    "language": "ar" if "Arabic" in prompt or any('\u0600' <= c <= '\u06FF' for c in prompt) else "en"
-                }
-
-                response = requests.post("http://127.0.0.1:8000/diagnose", data=payload, files=files)
-
-                if response.status_code == 200:
-                    data = response.json()
-                    
-                    response_en = data.get("response_en", "Diagnostic completed.")
-                    response_ar = data.get("response_ar", "تم التشخيص بنجاح.")
-                    trace = data.get("trace", [])
-                    pii_scrubbed = data.get("pii_scrubbed", False)
-
-                    # Build Response View
-                    if pii_scrubbed:
-                        st.warning("🔒 SecuritySentinel: Personal Identifiable Information (QID/Phone) detected and scrubbed.")
-                    
-                    full_response = f"""
-### Diagnostic Assessment & SLA Timeline
-
-{response_en}
-
----
-**التقرير باللغة العربية:**  
-{response_ar}
-"""
-                    st.markdown(full_response)
-
-                    if "Technician" in mode:
-                        with st.expander("🔍 LangGraph Supervisor Trace Execution", expanded=True):
-                            for step in trace:
-                                st.markdown(f"`{step}`")
-
-                    # Append Assistant Message to History
-                    st.session_state.messages.append({
-                        "role": "assistant",
-                        "content": full_response,
-                        "trace": trace
-                    })
-
-                else:
-                    st.error(f"Backend Service Error ({response.status_code}): {response.text}")
-
-            except Exception as e:
-                st.error(f"Failed to connect to FastAPI Backend (127.0.0.1:8000): {str(e)}")
+    else:
+        # RTL Mobile Phone Shell View
+        st.markdown("""
+        <div class="mobile-frame">
+            <div class="mobile-header">
+                <h4 style="color:white; margin:0;">🇶🇦 Qatar Mobile Support</h4>
+                <small style="color:#9ca3af;">تطبيق التشخيص والدعم الفني</small>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        m_col1, m_col2, m_col3 = st.columns([1, 2, 1])
+        with m_col2:
+            st.markdown(f'''
+            <div class="arabic-card arabic-text">
+                <h4 style="color: #f87171; margin-top:0;">نتيجة التشخيص:</h4>
+                <p style="color: #e5e7eb; font-size: 1.05rem; line-height: 1.6;">
+                    {res.get("response_ar", "")}
+                </p>
+                <hr style="border-color:#374151;">
+                <small style="color:#9ca3af;">English Reference:</small>
+                <p style="color:#d1d5db; font-size:0.9rem;">{res.get("response_en", "")}</p>
+            </div>
+            ''', unsafe_allow_html=True)
