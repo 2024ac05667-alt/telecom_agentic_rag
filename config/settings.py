@@ -1,5 +1,5 @@
 """
-Centralized Configuration Settings for Qatar Mobile Multimodal Diagnostic Agent.
+Centralized Configuration Settings for Doha Connect Multimodal Diagnostic Agent.
 """
 
 import os
@@ -10,7 +10,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
-    APP_NAME: str = "Qatar Mobile Multimodal Hardware Diagnostic Agent"
+    APP_NAME: str = "Doha Connect Multimodal Hardware Diagnostic Agent"
     VERSION: str = "2.1.0"
     DEBUG: bool = True
 

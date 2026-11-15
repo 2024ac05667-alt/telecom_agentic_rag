@@ -90,9 +90,9 @@ export default function AdminMonitor({ lang, setLang, onExit }: AdminMonitorProp
             </div>
             <div>
               <h1 className="font-bold text-base text-slate-900 dark:text-white">
-                Qatar Mobile • Admin Login
+                Doha Connect • Admin Login
               </h1>
-              <p className="text-xs text-slate-500">qatarmobile.qa Service & Audit Console</p>
+              <p className="text-xs text-slate-500">dohaconnect.qa Service & Audit Console</p>
             </div>
           </div>
 
@@ -164,12 +164,12 @@ export default function AdminMonitor({ lang, setLang, onExit }: AdminMonitorProp
             </div>
             <div>
               <h1 className="font-extrabold text-sm sm:text-base tracking-tight">
-                {isRtl ? 'قطر موبايل • لوحة مراقبة الصيانة' : 'Qatar Mobile • Admin Monitor'}
+                {isRtl ? 'دوحة كونكت • لوحة مراقبة الصيانة' : 'Doha Connect • Admin Monitor'}
               </h1>
               <p className="text-[11px] text-qatar-gold">
                 {isRtl
-                  ? 'سجلات التدقيق وطلبات استلام الأجهزة في الدوحة (qatarmobile.qa)'
-                  : 'SQLite Audit Logs & Doha Service Center Pickup Queue (qatarmobile.qa)'}
+                  ? 'سجلات التدقيق وطلبات استلام الأجهزة في الدوحة (dohaconnect.qa)'
+                  : 'SQLite Audit Logs & Doha Service Center Pickup Queue (dohaconnect.qa)'}
               </p>
             </div>
           </div>
@@ -258,8 +258,8 @@ export default function AdminMonitor({ lang, setLang, onExit }: AdminMonitorProp
             <Truck className="w-4 h-4" />
             <span>
               {isRtl
-                ? 'طلبات استلام الأجهزة المعتمدة - مركز صيانة قطر موبايل'
-                : 'Consented Qatar Mobile Doha Service Center Pickup Requests'}
+                ? 'طلبات استلام الأجهزة المعتمدة - مركز صيانة دوحة كونكت'
+                : 'Consented Doha Connect Doha Service Center Pickup Requests'}
             </span>
           </div>
 
@@ -291,12 +291,12 @@ export default function AdminMonitor({ lang, setLang, onExit }: AdminMonitorProp
         {/* Active 4-Node LangGraph Architecture Strip */}
         <section className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 space-y-3">
           <div className="text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-300">
-            Active 4-Node LangGraph Pipeline (Qatar Mobile)
+            Active 4-Node LangGraph Pipeline (Doha Connect)
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
             {[
-              { title: '1. Security Sentinel', sub: 'Masks QID & Qatar Mobile' },
-              { title: '2. Supervisor Agent', sub: 'Qatar Mobile Domain Guardrail' },
+              { title: '1. Security Sentinel', sub: 'Masks QID & Doha Connect' },
+              { title: '2. Supervisor Agent', sub: 'Doha Connect Domain Guardrail' },
               { title: '3. Diagnostic Orchestrator', sub: 'Vision + Law No. 8 RAG' },
               { title: '4. Localization Specialist', sub: 'Layman Bilingual + Pickup' },
             ].map((node, i) => (

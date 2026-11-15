@@ -17,7 +17,7 @@ from pydantic import BaseModel
 from graph.workflow import run_diagnostic_pipeline
 
 app = FastAPI(title="Qatar Telecom AI Diagnostic & SLA API")
-
+#to add CORS middleware to allow requests from any origin
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -27,10 +27,10 @@ app.add_middleware(
 )
 
 # 1. Create & mount persistent disk storage for uploaded device photos
-DATA_DIR = Path("data")
-UPLOAD_DIR = DATA_DIR / "uploads"
+DATA_DIR = Path("data") #data directory
+UPLOAD_DIR = DATA_DIR / "uploads" #user uploaded images
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-DB_PATH = DATA_DIR / "audit_logs.db"
+DB_PATH = DATA_DIR / "audit_logs.db" #for admin to view all user queries and diagnostic results
 
 app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
@@ -52,7 +52,7 @@ def verify_admin(credentials: HTTPBasicCredentials = Depends(security)):
     return credentials.username
 
 
-# 3. Initialize SQLite Database
+# 3. Initialize SQLite Database and create tables for initial audit and requests
 def init_db():
     with sqlite3.connect(DB_PATH) as conn:
         conn.execute(
@@ -80,7 +80,7 @@ def init_db():
             """
         )
 
-
+#initialize database tables
 init_db()
 
 

@@ -86,7 +86,7 @@ export default function PickupForm({
         required
         value={mobile}
         onChange={(e) => setMobile(e.target.value)}
-        placeholder={isArabic ? 'رقم الجوال القطري' : 'Qatar Mobile (e.g. 55123456)'}
+        placeholder={isArabic ? 'رقم الجوال القطري' : 'Doha Connect (e.g. 55123456)'}
         className="w-full p-1.5 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[11px]"
       />
       <input

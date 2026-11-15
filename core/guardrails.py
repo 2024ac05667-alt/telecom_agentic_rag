@@ -27,9 +27,9 @@ class PIIGuardrail:
             context=["qid", "qatar id", "id number", "civil id", "national id", "بطاقة"],
         )
 
-        # Custom Recognizer for Qatar Mobile Numbers (8 digits starting with 3, 5, 6, or 7)
+        # Custom Recognizer for Doha Connect Numbers (8 digits starting with 3, 5, 6, or 7)
         qa_phone_pattern = Pattern(
-            name="qatar_mobile_pattern",
+            name="dohaconnect_pattern",
             regex=r"(?:\+974\s?)?\b[3567]\d{7}\b",
             score=0.90,
         )

@@ -275,7 +275,7 @@ export default function ChatWidget({
                       ) : (
                         <>
                           <Scale className="w-3.5 h-3.5" />
-                          <span>{isTurnAr ? 'رعاية قطر موبايل' : 'Qatar Mobile Care'}</span>
+                          <span>{isTurnAr ? 'رعاية دوحة كونكت' : 'Doha Connect Care'}</span>
                         </>
                       )}
                     </span>

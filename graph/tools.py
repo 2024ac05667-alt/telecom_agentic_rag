@@ -1,5 +1,5 @@
 """
-Model Context Protocol (MCP) Microservice Server for Qatar Mobile Diagnostics.
+Model Context Protocol (MCP) Microservice Server for Doha Connect Diagnostics.
 Exposes Presidio PII Scrubbing, Gemini Flash Vision Inspection, and ChromaDB
 Legal Policy Retrieval as standardized MCP tools over stdio transport.
 """
@@ -18,7 +18,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 # Configure logging strictly to stderr so stdout remains clean for MCP JSON-RPC
 logging.basicConfig(level=logging.INFO, stream=sys.stderr)
-logger = logging.getLogger("qatar_mobile_mcp_server")
+logger = logging.getLogger("dohaconnect_mcp_server")
 
 # Compatible with both MCP Python SDK v2 (MCPServer) and v1 (FastMCP)
 try:

@@ -49,7 +49,7 @@ T = TypeVar("T", bound=BaseModel)
 class SupervisorDecision(BaseModel):
     intent: Literal["greeting", "diagnostic", "off_topic"] = Field(
         description=(
-            "Classify the user inquiry into one of three exact intents for Qatar Mobile (qatarmobile.qa):\n"
+            "Classify the user inquiry into one of three exact intents for Doha Connect (dohaconnect.qa):\n"
             "- 'greeting': greetings, introductions, thanks, or general 'can you help me?' openers.\n"
             "- 'diagnostic': any question, follow-up, or casual description about smartphones, tablets, MacBooks/laptops, "
             "gaming consoles (PS5, Switch), smartwatches, smart gadgets, warranties, spare parts, or Doha repair services.\n"
@@ -62,7 +62,7 @@ class SupervisorDecision(BaseModel):
 class BilingualSynthesis(BaseModel):
     customer_en: str = Field(
         description=(
-            "Plain-English, easy-to-read 3-to-4 line layman explanation for Qatar Mobile (qatarmobile.qa) customers "
+            "Plain-English, easy-to-read 3-to-4 line layman explanation for Doha Connect (dohaconnect.qa) customers "
             "(under 95 words, NO 'EN:' prefix). "
             "If a customer name was introduced in the current message, start with 'Marhaba <Name>,'. "
             "Explain clearly in everyday language what defect was detected and what Qatar consumer law provides:\n"
@@ -71,7 +71,7 @@ class BilingualSynthesis(BaseModel):
             "- Accidental physical impact or liquid/moisture damage requires a paid out-of-warranty repair quote, taking "
             "**3–5 business days** after written quote approval with a **6-month warranty** on replaced spare parts "
             "(Ministerial Decision No. 68 of 2012).\n"
-            "End with: 'Would you like to share your contact details below so our Qatar Mobile Doha Service Center can arrange device pickup?'"
+            "End with: 'Would you like to share your contact details below so our Doha Connect Doha Service Center can arrange device pickup?'"
         )
     )
     customer_ar: str = Field(
@@ -79,12 +79,12 @@ class BilingualSynthesis(BaseModel):
             "Plain, natural Modern Standard Arabic layman explanation matching customer_en (under 95 words, NO 'AR:' prefix), "
             "explaining the detected device defect, Qatar Law No. 8 of 2008 (2-year warranty & 15-day loaner rule under Article 9 for factory defects), "
             "and Ministerial Decision No. 68 of 2012 (3–5 business days paid repair after written quote approval + 6-month spare-parts warranty). "
-            "End with: 'هل ترغب في مشاركة بيانات التواصل أدناه ليقوم مركز صيانة قطر موبايل في الدوحة بترتيب استلام جهازك؟'"
+            "End with: 'هل ترغب في مشاركة بيانات التواصل أدناه ليقوم مركز صيانة دوحة كونكت في الدوحة بترتيب استلام جهازك؟'"
         )
     )
     response_en: str = Field(
         description=(
-            "Full, detailed English technical & legal audit report for the Qatar Mobile Enterprise Admin Console, "
+            "Full, detailed English technical & legal audit report for the Doha Connect Enterprise Admin Console, "
             "citing exact Qatar Consumer Protection Law No. 8 (2008) articles (Articles 1, 5, 9, 13, 16) and Ministerial Decision No. 68 (2012)."
         )
     )
@@ -363,7 +363,7 @@ def supervisor_node(state: DiagnosticGraphState) -> dict:
         }
 
     prompt = (
-        "Classify this customer message for Qatar Mobile (qatarmobile.qa) — a Doha retailer & repair center for "
+        "Classify this customer message for Doha Connect (dohaconnect.qa) — a Doha retailer & repair center for "
         "smartphones, tablets, MacBooks/computers, PS5/Nintendo Switch gaming consoles, smartwatches, and smart gadgets:\n"
         "- 'greeting': greetings, introductions (e.g. 'hi this is ramiz'), thanks, or general 'can you help me?' openers.\n"
         "- 'diagnostic': any question, follow-up, or casual mention of smartphones, tablets, laptops, gaming consoles, "
@@ -424,16 +424,16 @@ def greeting_welcome_node(state: DiagnosticGraphState) -> dict:
 
     history.append(f"GreetingAgent: Personalized welcome ({user_name or 'Guest'})")
     msg_en = (
-        f"{greet_en} Welcome to Qatar Mobile Service Center (qatarmobile.qa). How can I help with your smartphone, "
+        f"{greet_en} Welcome to Doha Connect Service Center (dohaconnect.qa). How can I help with your smartphone, "
         "tablet, MacBook, gaming console, or smart gadget warranty & repair today? You can also upload up to 4 photos of any issue."
     )
     msg_ar = (
-        f"{greet_ar} أهلاً بك في مركز صيانة قطر موبايل (qatarmobile.qa)! كيف يمكنني مساعدتك اليوم بخصوص هاتفك أو جهازك اللوحي "
+        f"{greet_ar} أهلاً بك في مركز صيانة دوحة كونكت (dohaconnect.qa)! كيف يمكنني مساعدتك اليوم بخصوص هاتفك أو جهازك اللوحي "
         "أو اللابتوب أو أجهزة الألعاب أو الضمان والصيانة في قطر؟ يمكنك أيضاً إرفاق حتى 4 صور للعطل."
     )
     return {
         "hardware_assessment": "Greeting — Awaiting Device Query or Photos",
-        "policy_context": "Guided Onboarding — Qatar Mobile Device & Consumer Protection Assistant",
+        "policy_context": "Guided Onboarding — Doha Connect Device & Consumer Protection Assistant",
         "customer_en": msg_en,
         "customer_ar": msg_ar,
         "response_en": msg_en,
@@ -448,17 +448,17 @@ def scope_overflow_node(state: DiagnosticGraphState) -> dict:
     step = state.get("execution_step_count", 0) + 1
     history.append("ScopeOverflowAgent: Domain boundary enforced")
     msg_en = (
-        "Qatar Mobile (qatarmobile.qa) only assists with consumer electronics (smartphones, tablets, laptops, "
+        "Doha Connect (dohaconnect.qa) only assists with consumer electronics (smartphones, tablets, laptops, "
         "gaming consoles, and smart gadgets), device repairs, and Qatar Consumer Protection warranty rules (Law No. 8 of 2008). "
         "We do not provide home broadband or internet plans."
     )
     msg_ar = (
-        "تساعد قطر موبايل (qatarmobile.qa) فقط في الأجهزة الإلكترونية (الهواتف، الأجهزة اللوحية، اللابتوب، أجهزة الألعاب، والأجهزة الذكية)، "
+        "تساعد دوحة كونكت (dohaconnect.qa) فقط في الأجهزة الإلكترونية (الهواتف، الأجهزة اللوحية، اللابتوب، أجهزة الألعاب، والأجهزة الذكية)، "
         "خدمات الصيانة، ولوائح حماية المستهلك في قطر (قانون رقم 8 لسنة 2008)، ولا نوفر باقات إنترنت منزلي."
     )
     return {
         "hardware_assessment": "Bypassed (Out-of-Scope Inquiry)",
-        "policy_context": "Domain Boundary Guardrail — Qatar Mobile Electronics & Repair Scope Only",
+        "policy_context": "Domain Boundary Guardrail — Doha Connect Electronics & Repair Scope Only",
         "customer_en": msg_en,
         "customer_ar": msg_ar,
         "response_en": msg_en,
@@ -568,7 +568,7 @@ def diagnostic_orchestrator_node(state: DiagnosticGraphState) -> dict:
         else (
             "Qatar Law No. 8 of 2008 on Consumer Protection (Articles 1, 5 & 9) & Ministerial Decision No. 68 of 2012: "
             "Electronic devices carry a 2-year statutory warranty for manufacturing defects with a free loaner device if repairs exceed 15 days (Art. 9); "
-            "out-of-warranty paid repairs at Qatar Mobile Service Center take 3–5 business days after written cost/duration quote approval and include a 6-month spare-parts warranty."
+            "out-of-warranty paid repairs at Doha Connect Service Center take 3–5 business days after written cost/duration quote approval and include a 6-month spare-parts warranty."
         )
     )
 
@@ -608,18 +608,18 @@ def localization_specialist_node(state: DiagnosticGraphState) -> dict:
     )
 
     prompt = f"""
-You are the Qatar Mobile (qatarmobile.qa) Device Care & Consumer Protection Assistant in Doha, Qatar.
-Qatar Mobile sells and repairs smartphones, tablets, laptops/MacBooks, gaming consoles (PS5, Switch), smartwatches, and smart gadgets (it does NOT sell internet/broadband plans).
+You are the Doha Connect (dohaconnect.qa) Device Care & Consumer Protection Assistant in Doha, Qatar.
+Doha Connect sells and repairs smartphones, tablets, laptops/MacBooks, gaming consoles (PS5, Switch), smartwatches, and smart gadgets (it does NOT sell internet/broadband plans).
 Generate TWO output tiers from the visual hardware findings and retrieved Qatar legislation:
 
 Tier A (`customer_en`, `customer_ar`): Clear, friendly layman explanation in 3–4 short lines (under 95 words, NO 'EN:' or 'AR:' prefix).
   - {name_hint}
   - Explain in plain, everyday terms what hardware defect was detected and what Qatar consumer law provides:
-    * Accidental physical impact, swollen battery from heat/wear, or liquid/moisture damage is an out-of-warranty paid repair at Qatar Mobile Service Center, taking **3–5 business days** after you approve a written cost quote, backed by a **6-month warranty** on replaced spare parts (Ministerial Decision No. 68 of 2012).
+    * Accidental physical impact, swollen battery from heat/wear, or liquid/moisture damage is an out-of-warranty paid repair at Doha Connect Service Center, taking **3–5 business days** after you approve a written cost quote, backed by a **6-month warranty** on replaced spare parts (Ministerial Decision No. 68 of 2012).
     * Covered manufacturing defects carry a **2-year statutory warranty** and a **free loaner device** if repair takes more than 15 days (Qatar Law No. 8 of 2008, Article 9).
-  - End by asking: "Would you like to share your contact details below so our Qatar Mobile Doha Service Center can arrange device pickup?" (and its natural Arabic equivalent in `customer_ar`).
+  - End by asking: "Would you like to share your contact details below so our Doha Connect Doha Service Center can arrange device pickup?" (and its natural Arabic equivalent in `customer_ar`).
 
-Tier B (`response_en`, `response_ar`): Detailed technical & legal audit report for the Qatar Mobile Enterprise Admin Monitor Console citing exact Qatar Consumer Protection Law No. 8 (2008) articles (Articles 1, 5, 9, 13, 16) and Ministerial Decision No. 68 (2012).
+Tier B (`response_en`, `response_ar`): Detailed technical & legal audit report for the Doha Connect Enterprise Admin Monitor Console citing exact Qatar Consumer Protection Law No. 8 (2008) articles (Articles 1, 5, 9, 13, 16) and Ministerial Decision No. 68 (2012).
 
 Current Customer Message: {latest_text}
 Full Context: {query}
@@ -662,12 +662,12 @@ Retrieved Qatar Legal Policy (ChromaDB top_k=2): {policy_context}
         "customer_en": (
             f"{prefix_en}**What We Found:** {clean_finding}.{skipped_note_en}\n"
             "**Your Qatar Rights & Timeline:** Accidental physical or liquid damage is a paid repair taking **3–5 business days** after written quote approval with a **6-month warranty** on replaced parts (Ministerial Decision No. 68/2012), while factory defects carry a **2-year warranty** and a **free loaner device** if repair exceeds 15 days (Qatar Law No. 8/2008, Art. 9).\n"
-            "Would you like to share your contact details below so our Qatar Mobile Doha Service Center can arrange device pickup?"
+            "Would you like to share your contact details below so our Doha Connect Doha Service Center can arrange device pickup?"
         ),
         "customer_ar": (
             f"{prefix_ar}**ما تم اكتشافه:** {clean_finding}.{skipped_note_ar}\n"
             "**حقوقك والمدة في قطر:** إصلاح أضرار السقوط أو السوائل يستغرق **3–5 أيام عمل** بعد الموافقة على التقدير المكتوب مع **ضمان 6 أشهر** على القطع (قرار 68/2012)، بينما تشمل العيوب المصنعية **ضمان سنتين** وجهازاً بديلاً مجانياً إذا تجاوز الإصلاح 15 يوماً (قانون حماية المستهلك رقم 8/2008، المادة 9).\n"
-            "هل ترغب في مشاركة بيانات التواصل أدناه ليقوم مركز صيانة قطر موبايل في الدوحة بترتيب استلام جهازك؟"
+            "هل ترغب في مشاركة بيانات التواصل أدناه ليقوم مركز صيانة دوحة كونكت في الدوحة بترتيب استلام جهازك؟"
         ),
         "response_en": f"**Hardware Findings:** {hardware_assessment}\n\n**Applicable Qatar Law:** {policy_context}",
         "response_ar": f"**نتائج الفحص الفني:** {hardware_assessment}\n\n**القانون القطري المطبق:** {policy_context}",

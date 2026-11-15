@@ -26,7 +26,7 @@ export default function AdminStats({
   pickups,
 }: AdminStatsProps) {
   const pipelineNodes = [
-    { name: '1. Security Sentinel', desc: 'Masks QID & Qatar Mobile' },
+    { name: '1. Security Sentinel', desc: 'Masks QID & Doha Connect' },
     { name: '2. Supervisor Agent', desc: 'Domain & Jailbreak Guardrail' },
     { name: '3. Diagnostic Orchestrator', desc: 'Vision + ChromaDB Legal RAG' },
     { name: '4. Localization Specialist', desc: 'Bilingual Reply + Pickup Offer' },

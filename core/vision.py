@@ -1,5 +1,5 @@
 """
-Multimodal Hardware Defect Vision Inspector for Qatar Mobile (qatarmobile.qa).
+Multimodal Hardware Defect Vision Inspector for Doha Connect (dohaconnect.qa).
 """
 
 import logging
@@ -25,7 +25,7 @@ def inspect_device_images(
     user_query: str = "",
 ) -> str:
     """
-    Inspects up to 4 customer-uploaded images for Qatar Mobile (qatarmobile.qa):
+    Inspects up to 4 customer-uploaded images for Doha Connect (dohaconnect.qa):
     - Recognizes smartphones, tablets, laptops/MacBooks, gaming consoles (PS5, Nintendo Switch),
       smartwatches, smart TVs/streaming boxes, power banks, and charging/screen hardware.
     - If ALL images are unrelated to consumer electronics/gadgets, returns 'NON_TELECOM_IMAGE'.
@@ -40,10 +40,10 @@ def inspect_device_images(
         return "Vision client unconfigured — proceeding with text-based diagnostic triage."
 
     prompt = (
-        "You are an expert hardware diagnostic vision inspector for Qatar Mobile (qatarmobile.qa), "
+        "You are an expert hardware diagnostic vision inspector for Doha Connect (dohaconnect.qa), "
         "a consumer electronics retailer and repair center in Doha, Qatar.\n"
         "Examine EVERY attached image individually:\n"
-        "1. Determine whether each image shows a consumer electronic product sold or serviced by Qatar Mobile: "
+        "1. Determine whether each image shows a consumer electronic product sold or serviced by Doha Connect: "
         "smartphones (iPhone, Samsung Galaxy, etc.), tablets (iPad, etc.), laptops/MacBooks, gaming consoles/controllers "
         "(PS5, Nintendo Switch), smartwatches, smart TVs/streaming boxes, air purifiers, or power banks/chargers.\n"
         "2. If NONE of the attached images show a consumer electronic device, respond ONLY with the exact token: NON_TELECOM_IMAGE\n"

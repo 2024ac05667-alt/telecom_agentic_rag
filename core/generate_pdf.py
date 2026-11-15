@@ -50,7 +50,7 @@ def generate_policy_pdf(output_path: str = "./data/qatar_sla_policy.pdf") -> str
     )
 
     elements = [
-        Paragraph("Qatar Mobile - Enterprise Hardware Diagnostic & SLA Warranty Policy", title_style),
+        Paragraph("Doha Connect - Enterprise Hardware Diagnostic & SLA Warranty Policy", title_style),
         Paragraph(
             "<b>Compliance Framework:</b> Qatar Consumer Protection Law No. 8 of 2008, "
             "Ministerial Decision No. 68 of 2012 & CRA QoS Regulations",
@@ -59,7 +59,7 @@ def generate_policy_pdf(output_path: str = "./data/qatar_sla_policy.pdf") -> str
         Spacer(1, 10),
         Paragraph("1. Standard Device Warranty Terms (Law No. 8 of 2008)", h2_style),
         Paragraph(
-            "All smartphones, tablets, laptops, and gaming consoles purchased through Qatar Mobile authorized outlets "
+            "All smartphones, tablets, laptops, and gaming consoles purchased through Doha Connect authorized outlets "
             "carry a mandatory 2-year (24-month) statutory GCC/Qatar warranty against manufacturing defects from the date of purchase.",
             body_style,
         ),
@@ -110,7 +110,7 @@ def generate_policy_pdf(output_path: str = "./data/qatar_sla_policy.pdf") -> str
             Paragraph("3. Statutory Consumer Protection Rights", h2_style),
             Paragraph(
                 "<b>Substitute Loaner Device (Article 9 & Reg. 10):</b> Where executing warranty repairs exceeds "
-                "fifteen (15) days, Qatar Mobile must provide a similar substitute device free of charge until repairs finish.",
+                "fifteen (15) days, Doha Connect must provide a similar substitute device free of charge until repairs finish.",
                 body_style,
             ),
             Paragraph(

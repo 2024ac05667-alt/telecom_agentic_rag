@@ -1,7 +1,7 @@
 """
 Persistent ChromaDB Vector Store for Qatar Consumer Protection Law No. 8 (2008),
 Ministerial Decision No. 68 of 2012, CRA Telecom Quality-of-Service Regulations,
-and the internal Qatar Mobile SLA Warranty Policy PDF.
+and the internal Doha Connect SLA Warranty Policy PDF.
 """
 
 import os
@@ -128,9 +128,9 @@ def _load_sla_pdf_chunks(pdf_path: Path = DEFAULT_SLA_PDF_PATH) -> List[Dict[str
             if page_text:
                 chunks.append(
                     {
-                        "id": f"qatar_mobile_sla_pdf_page_{page_idx + 1}",
+                        "id": f"dohaconnect_sla_pdf_page_{page_idx + 1}",
                         "metadata": {
-                            "law": "Qatar Mobile Internal SLA & Law No. 8 of 2008",
+                            "law": "Doha Connect Internal SLA & Law No. 8 of 2008",
                             "article": f"SLA Policy PDF (Page {page_idx + 1})",
                             "topic": "sla_turnaround_and_warranty_matrix",
                         },
@@ -146,7 +146,7 @@ def _load_sla_pdf_chunks(pdf_path: Path = DEFAULT_SLA_PDF_PATH) -> List[Dict[str
 class QatarLegalVectorStore:
     """
     Persistent ChromaDB wrapper for Qatar Consumer Protection Law No. 8 (2008),
-    CRA Telecom Quality-of-Service regulations, and Qatar Mobile SLA policy PDFs.
+    CRA Telecom Quality-of-Service regulations, and Doha Connect SLA policy PDFs.
     """
 
     def __init__(
